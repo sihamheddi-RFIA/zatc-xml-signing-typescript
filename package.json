@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon index.ts",
+    "dev": "nodemon 4-sign-hash-xml.ts",
     "build": "tsc ."
   },
   "author": "siham heddi",

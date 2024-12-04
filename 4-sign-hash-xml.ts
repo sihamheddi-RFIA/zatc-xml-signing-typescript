@@ -2,7 +2,6 @@ import { EGS, EGSUnitInfo } from "zatca-xml-js/lib/zatca/egs/index";
 import { ZATCASimplifiedInvoiceLineItem } from "zatca-xml-js/lib/zatca/templates/simplified_tax_invoice_template";
 import { ZATCASimplifiedTaxInvoice } from "zatca-xml-js/lib/zatca/ZATCASimplifiedTaxInvoice";
 import * as fs from "fs";
-import "./generateKeys";
 
 // Sample line item
 const line_item: ZATCASimplifiedInvoiceLineItem = {
@@ -14,14 +13,14 @@ const line_item: ZATCASimplifiedInvoiceLineItem = {
 };
 
 const privateKey = fs.readFileSync("ec-secp256k1-priv-key.pem").toString();
-const compliance_certificate = fs.readFileSync("Cert.pem").toString();
+const compliance_certificate = fs.readFileSync("cert.pem").toString();
+//const csr = fs.readFileSync("taxpayer.csr").toString();
 
 // Sample EGSUnit
 const egsunit: EGSUnitInfo = {
   uuid: "FC15EB04-B224-48C5-9A8B-D242DF52E8EE",
   custom_id: "EGS1-886431145",
   private_key: privateKey,
-  // csr,
   compliance_certificate,
   // compliance_api_secret: secret,
   model: "IOS",
@@ -58,15 +57,12 @@ const main = async () => {
     const egs = new EGS(egsunit);
     const x: any = invoice.getXML();
 
-    // const compliance_request_id = await egs.issueComplianceCertificate(
-    //   "123345"
-    // );
-
-    //console.log(x.xml_object.Invoice);
     const { signed_invoice_string, invoice_hash, qr } =
       egs.signInvoice(invoice);
 
-    console.log(signed_invoice_string);
+    fs.writeFileSync("signed_invoice.xml", signed_invoice_string);
+
+    // console.log(signed_invoice_string);
   } catch (error: any) {
     console.log(error);
   }
